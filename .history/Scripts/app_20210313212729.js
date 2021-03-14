@@ -9,13 +9,18 @@ var core;
         $(`#${router.ActiveLink}`).addClass("active");
         history.pushState({}, "", router.ActiveLink);
     }
+
     function loadHeader(pageName) {
         $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
             toggleLogin();
             $(`#${pageName}`).addClass("active");
             $("a").on("click", function () {
-                loadLink($(this).attr("id"));
+                $(`#${router.ActiveLink}`).removeClass("active");
+                router.ActiveLink = $(this).attr("id");
+                loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+                $(`#${router.ActiveLink}`).addClass("active");
+                history.pushState({}, "", router.ActiveLink);
             });
             $("a").on("mouseover", function () {
                 $(this).css('cursor', 'pointer');
@@ -125,21 +130,21 @@ var core;
             }
             contactList.innerHTML = data;
             $("button.edit").on("click", function () {
-                loadLink("edit", $(this).val().toString());
+                location.href = "/edit#" + $(this).val();
             });
             $("button.delete").on("click", function () {
                 if (confirm("Are you sure?")) {
                     localStorage.removeItem($(this).val().toString());
                 }
-                loadLink("contact-list");
+                location.href = "/contact-list";
             });
             $("#addButton").on("click", function () {
-                loadLink("edit");
+                location.href = "/edit";
             });
         }
     }
     function displayEdit() {
-        let key = router.LinkData;
+        let key = location.hash.substring(1);
         let contact = new core.Contact();
         if (key != "") {
             contact.deserialize(localStorage.getItem(key));
@@ -160,10 +165,10 @@ var core;
             contact.ContactNumber = $("#contactNumber").val().toString();
             contact.EmailAddress = $("#emailAddress").val().toString();
             localStorage.setItem(key, contact.serialize());
-            loadLink("contact-list");
+            location.href = "/contact-list";
         });
         $("#cancelButton").on("click", function () {
-            loadLink("contact-list");
+            location.href = "/contact-list";
         });
     }
     function displayLogin() {
@@ -185,7 +190,7 @@ var core;
                 if (success) {
                     sessionStorage.setItem("user", newUser.serialize());
                     messageArea.removeAttr("class").hide();
-                    loadLink("contact-list");
+                    location.href = "/contact-list";
                 }
                 else {
                     username.trigger("focus").trigger("select");
@@ -195,7 +200,7 @@ var core;
         });
         $("#cancelButton").on("click", function () {
             document.forms[0].reset();
-            loadLink("home");
+            location.href = "/home";
         });
     }
     function displayRegister() {
@@ -205,7 +210,7 @@ var core;
             $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
             $("#logout").on("click", function () {
                 sessionStorage.clear();
-                loadLink("login");
+                location.href = "/login";
             });
             $("#logout").on("mouseover", function () {
                 $(this).css('cursor', 'pointer');
@@ -220,7 +225,7 @@ var core;
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
-            loadLink("login");
+            location.href = "/login";
         }
     }
     function display404() {

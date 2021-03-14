@@ -9,13 +9,14 @@ var core;
         $(`#${router.ActiveLink}`).addClass("active");
         history.pushState({}, "", router.ActiveLink);
     }
+
     function loadHeader(pageName) {
         $.get("./Views/components/header.html", function (data) {
             $("header").html(data);
             toggleLogin();
             $(`#${pageName}`).addClass("active");
             $("a").on("click", function () {
-                loadLink($(this).attr("id"));
+                loadLink($(this).attr("id"));     
             });
             $("a").on("mouseover", function () {
                 $(this).css('cursor', 'pointer');
