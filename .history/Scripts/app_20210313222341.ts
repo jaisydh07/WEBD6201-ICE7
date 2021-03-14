@@ -434,7 +434,6 @@ namespace core
       }
 
       addLinkEvents();
-      highlightActiveLink(router.ActiveLink);
     }
 
     function authGuard():void

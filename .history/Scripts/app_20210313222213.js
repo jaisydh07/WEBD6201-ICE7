@@ -230,7 +230,6 @@ var core;
             }
         }
         addLinkEvents();
-        highlightActiveLink(router.ActiveLink);
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
