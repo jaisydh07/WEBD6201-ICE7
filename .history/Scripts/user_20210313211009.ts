@@ -1,8 +1,8 @@
 // User Class
 
-namespace core
+((core)=>
 {
-  export class User 
+  class User 
   {
     // Instance Variables
     private m_displayName: string;

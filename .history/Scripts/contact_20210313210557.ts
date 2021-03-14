@@ -125,5 +125,8 @@ namespace core
       this.EmailAddress = propertyArray[2];
     }
   }
-}
+
+  core.Contact = Contact;
+
+})(core || (core={}));
 
