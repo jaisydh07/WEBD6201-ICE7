@@ -63,7 +63,3 @@
           this.Username = propertyArray[2];
       }
 
-      core.User = User;
-    })(core || (core = {}));
-    //# sourceMappingURL=user.js.map
-
