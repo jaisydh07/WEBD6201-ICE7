@@ -38,7 +38,6 @@ var core;
     function loadContent(pageName, callback) {
         $.get(`./Views/content/${pageName}.html`, function (data) {
             $("main").html(data);
-            toggleLogin();
             callback();
         });
     }
@@ -48,6 +47,7 @@ var core;
         });
     }
     function displayHome() {
+        console.log("Home page function called");
     }
     function displayAbout() {
     }
@@ -214,22 +214,22 @@ var core;
     function displayRegister() {
     }
     function toggleLogin() {
-        let contactListLink = $("#contactListLink")[0];
         if (sessionStorage.getItem("user")) {
             $("#loginListItem").html(`<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`);
-            if (!contactListLink) {
-                $(`<li id="contactListLink" class="nav-item">
-          <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-        </li>`).insertBefore("#loginListItem");
-            }
+            $("#logout").on("click", function () {
+                sessionStorage.clear();
+                loadLink("login");
+            });
+            $("#logout").on("mouseover", function () {
+                $(this).css('cursor', 'pointer');
+            });
+            $(`<li class="nav-item">
+        <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
+      </li>`).insertBefore("#loginListItem");
         }
         else {
             $("#loginListItem").html(`<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`);
-            if (contactListLink) {
-                $("#contactListLink").remove();
-            }
         }
-        addLinkEvents();
     }
     function authGuard() {
         if (!sessionStorage.getItem("user")) {
@@ -256,6 +256,7 @@ var core;
         }
     }
     function Start() {
+        console.log("App Started...");
         loadHeader(router.ActiveLink);
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
         loadFooter();

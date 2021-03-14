@@ -56,8 +56,11 @@ namespace core
      */
      function loadLink(link:string, data:string = ""):void
      {
-      highlightActiveLink(link, data);
+       $(`#${router.ActiveLink}`).removeClass("active"); // removes highlighted link
+       router.ActiveLink = link;
+       router.LinkData = data;
        loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
+       $(`#${router.ActiveLink}`).addClass("active"); // applies highlighted link to new page
        history.pushState({},"", router.ActiveLink); // this replaces the url displayed in the browser
      }
  
@@ -73,9 +76,23 @@ namespace core
       {
         $("header").html(data); // load the navigation bar
 
+        toggleLogin(); // add login / logout and secure links
+
         $(`#${pageName}`).addClass("active"); // highlight active link
 
-        addLinkEvents();
+        // loop through each anchor tag in the unordered list and 
+        // add an event listener / handler to allow for 
+        // content injection
+        $("a").on("click", function()
+        {
+          loadLink($(this).attr("id"));
+        });
+
+        // make it look like each nav item is an active link
+        $("a").on("mouseover", function()
+        {
+          $(this).css('cursor', 'pointer');
+        });
 
       });
     }
@@ -94,7 +111,6 @@ namespace core
       {
         $("main").html(data);
 
-        toggleLogin();
         callback();
       });
 
@@ -115,7 +131,8 @@ namespace core
 
     function displayHome(): void
     {
-     
+      console.log("Home page function called");
+
     }
 
     function displayAbout(): void
@@ -400,7 +417,6 @@ namespace core
 
     function toggleLogin(): void
     {
-      let contactListLink = $("#contactListLink")[0]; // makes a reference to the contact-list link
       // if user is logged in
       if(sessionStorage.getItem("user"))
       {
@@ -409,31 +425,33 @@ namespace core
         `<a id="logout" class="nav-link" aria-current="page"><i class="fas fa-sign-out-alt"></i> Logout</a>`
         );
 
-        if(!contactListLink) // checks if contact-list link is not already present
+        $("#logout").on("click", function()
         {
-          // add contact-list link
-          $(`<li id="contactListLink" class="nav-item">
-          <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
-        </li>`).insertBefore("#loginListItem");
-        }
-          
-        }
+          // perform logout
+          sessionStorage.clear();
+
+          // redirect back to login
+          loadLink("login");
+        });
+
+        // make it look like each nav item is an active link
+        $("#logout").on("mouseover", function()
+        {
+          $(this).css('cursor', 'pointer');
+        });
+
+        $(`<li class="nav-item">
+        <a id="contact-list" class="nav-link" aria-current="page"><i class="fas fa-users fa-lg"></i> Contact List</a>
+      </li>`).insertBefore("#loginListItem");
+
+      }
       else
       {
         // swap out the login link for logout
         $("#loginListItem").html(
           `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
           );
-
-          if(contactListLink) // checks if contact-list link is present
-        {
-          // remove contact-list link
-          $("#contactListLink").remove();
-        }
-
       }
-
-      addLinkEvents();
     }
 
     function authGuard():void
@@ -482,6 +500,8 @@ namespace core
      */
     function Start(): void
     {
+        console.log("App Started...");
+
         loadHeader(router.ActiveLink);
 
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));

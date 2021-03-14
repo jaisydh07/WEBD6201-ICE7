@@ -432,8 +432,6 @@ namespace core
         }
 
       }
-
-      addLinkEvents();
     }
 
     function authGuard():void
@@ -482,6 +480,8 @@ namespace core
      */
     function Start(): void
     {
+        console.log("App Started...");
+
         loadHeader(router.ActiveLink);
 
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));

@@ -424,16 +424,7 @@ namespace core
         $("#loginListItem").html(
           `<a id="login" class="nav-link" aria-current="page"><i class="fas fa-sign-in-alt"></i> Login</a>`
           );
-
-          if(contactListLink) // checks if contact-list link is present
-        {
-          // remove contact-list link
-          $("#contactListLink").remove();
-        }
-
       }
-
-      addLinkEvents();
     }
 
     function authGuard():void
@@ -482,6 +473,8 @@ namespace core
      */
     function Start(): void
     {
+        console.log("App Started...");
+
         loadHeader(router.ActiveLink);
 
         loadContent(router.ActiveLink, ActiveLinkCallBack(router.ActiveLink));
